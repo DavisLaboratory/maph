@@ -152,6 +152,8 @@ conda create --name maph \
 
 ## Setting up
 
+**This is currently the Beta version. (Feb 4th 2022) 
+
 1.  Clone this repo (as below) or create a new directory and place the
     provided scripts
 
