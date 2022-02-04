@@ -1,10 +1,10 @@
-# PhlashyNAMe Tutorial
+# maph Tutorial
 
 ## Introduction
 
-PhlashyNAMe is a command line tool for downstream network-based analysis
+maph is a command line tool for downstream network-based analysis
 of Proteomics and Phosphoproteomics data. The tool can be run on linux,
-Mac and Windows operating systems. What makes PhlashyNAMe unique is it's
+Mac and Windows operating systems. What makes maph unique is it's
 ability to analyse your data at the phosphopeptide level thereby
 averting the need to manually map phosphopeptides to proteins.
 
@@ -12,7 +12,7 @@ Reactome annotates proteins in specific phosphorylation states as
 separate entities, therefore these phosphoproteins can take part in
 different signalling cascades depending on their phosphorylation state.
 Proteins in these differing modification states are hereby referred to
-as *proteoforms*. Taking advantage of this structure, PhlashyNAMe takes
+as *proteoforms*. Taking advantage of this structure, maph takes
 an input file of phosphopeptides and maps the phosphorylations onto
 proteins and complexes according to a set of guidelines explained in
 detail in the figure below. It works by assigning a **confidence score**
@@ -20,9 +20,9 @@ and an **abundance score** to each mapped protein and complex.
 
 #### Confidence Score
 
-Phosphoproteomic data is error prone therefore PhlashyNAMe computes a
+Phosphoproteomic data is error prone therefore maph computes a
 confidence score to summarise the confidence we have in observing any
-given proteoform. PhlashyNAMe does so by combining evidence from the
+given proteoform. maph does so by combining evidence from the
 data with that from knowledge bases such as Reactome into a confidence
 score for each proteoform. This confidence score summarises support for
 a given phosphorylation state of a protein (proteoform) over its other
@@ -35,7 +35,7 @@ phosphorylation states based on observations from the data.
 
 To better understand how these scores are computed, it is important to
 first understand the structure of Reactome. The figure below outlines
-how Reactome is organised and shows its representation in PhlashyNAMe.
+how Reactome is organised and shows its representation in maph.
 
 ![Reactome
 Proteoforms](https://user-images.githubusercontent.com/9949832/121049429-06383e00-c7fb-11eb-8a4d-e9677ad0a220.png)
@@ -134,11 +134,11 @@ framework.
   * devtools
 
 If you do not have the required dependencies, the following `conda`
-command will create an environment called `PhlashyNAMe` with all the
+command will create an environment called `maph` with all the
 dependencies installed.
 
 ```
-conda create --name PhlashyNAMe \
+conda create --name maph \
   --channel conda-forge \
   --channel bioconda \
   r=3.6 \
@@ -172,7 +172,7 @@ git clone https://github.com/HannahHuckstep/maph.git
 
 ## Analysis modes
 
-PhlashyNAMe is a suite of tools that enable a network-based analysis of phosphoproteomic data. The analysis tools provided within PhlashyNAMe are in order of usage:
+maph is a suite of tools that enable a network-based analysis of phosphoproteomic data. The analysis tools provided within maph are in order of usage:
 
 Database creation
 
@@ -352,7 +352,7 @@ NBHD_sum_pval_* | The pvalue for the neighbourhood surrounding this node in the 
 
 > "WriteDBtoSIF" , takes an input database [-idb] and an output path [-op]
 
-To write the SIF and attribute files, PhlashyNAMe requires the input database directory and the output directory path. The command is as follows: 
+To write the SIF and attribute files, maph requires the input database directory and the output directory path. The command is as follows: 
 ``` 
 java -jar ./path/to/jars/maph.jar -m WriteDBtoSIF -idb ./path/to/graph/ -op ./path/to/output/
 ```
