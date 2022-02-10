@@ -18,7 +18,7 @@ proteins and complexes according to a set of guidelines explained in
 detail in the figure below. It works by assigning a **confidence score**
 and an **abundance score** to each mapped protein and complex.
 
-#### Confidence Score
+#### Confidence (Support) Score
 
 Phosphoproteomic data is error prone therefore maph computes a
 confidence score to summarise the confidence we have in observing any
@@ -320,6 +320,8 @@ This plot from the R report depicts the distribution of the proportion of peptid
 ![Screen Shot 2021-06-28 at 11 11 16 pm](https://user-images.githubusercontent.com/9949832/123642081-3e64f680-d866-11eb-92c2-41dea0b25884.png)
 
 This plot depicts the distribution of the proportion of phosphorylation nodes in the database that were mapped to from each of the 554 qPhos experiments and where the Control experiment sits (the red line) in comparison. 
+
+In addition to these files, a file is provided listing all of the UniProt ids in your data that did not map to the database. In our exapmle the output file is named "UniProtIDsNotMapped_Control.tsv". 
 
 ### Visualization 
 #### Cytoscape
