@@ -244,8 +244,12 @@ Now we should be ready to map our data! Data can be mapped to pre-built neo4j da
 ```
 unzip databases/mouse.zip
 ```
-
-**Note that pre-computed databases need to be re-extracted for new analyses as the mapping step modifies the graph database.**
+This will create a folder called "MOUSE" with a subfolder called "MOUSE_copyFrom". Please create a new Graph folder and copy the database into this new folder. you can do so using:
+```
+mkdir GRAPH
+cp -r MOUSE/MOUSE_copyFrom/ GRAPH/
+```
+You can then use this newly made database for your analysis.
 
 In order to map your data you will need an input file with the following 4 columns; 
 1. A column where each cell contains a single UniProt ID corresponding to a peptide. *The name of the column cannot contain spaces*. 
@@ -287,19 +291,27 @@ To map the data you can run the following command. Note that this is an intensiv
 java -jar ./path/to/jars/maph.jar -m MapPeptides -idb ./path/to/graph/database/ -op ./path/to/output/ -idf ./path/to/data.txt -as HighestSupport
 ```
                          
-![Filling out parameters](https://user-images.githubusercontent.com/9949832/123599868-6b4ee480-d839-11eb-81f3-73a37ee65293.png)
+![Filling out parameters](https://user-images.githubusercontent.com/9949832/153336584-51de3134-822c-4927-95bf-d41358d1ddbe.png)
+
 
 The tool will automatically detect the different experiments and map them separately. In this case, there are 2 experiments 'Control' and 'Insulin'. After mapping, we can look at the mapping report generated for each experiment in the output directory named 'PhosphoMappingReport_Control' and 'PhosphoMappingReport_Insulin' to understand how well each experiment mapped. Looking at the Control report: 
 
-![Screen Shot 2021-06-28 at 5 54 39 pm](https://user-images.githubusercontent.com/9949832/123600527-1d86ac00-d83a-11eb-9447-7adbc22e8b08.png)
+![Screen Shot 2022-02-10 at 3 03 47 pm](https://user-images.githubusercontent.com/9949832/153336700-cb805580-cc0c-4c9d-9ccb-d61da0a9a32b.png)
+
 
 The first few lines give the statistics from the data such as the number of peptides and proteins that mapped and so on while the network statistics indicate the number of items in the database that were mapped to. Following that, the number of proteins and complexes that have been measured in each cellular location are shown in descending order. 
 
-![Screen Shot 2021-06-28 at 5 54 56 pm](https://user-images.githubusercontent.com/9949832/123600545-237c8d00-d83a-11eb-8439-8c4cd5b3b8e3.png)
+![Screen Shot 2022-02-10 at 3 23 29 pm](https://user-images.githubusercontent.com/9949832/153336856-663c1039-a575-4c17-b299-aab5f7366f03.png)
+
 
 In addition, Reactome pathways with the highest proportion of measured proteins and complexes are listed. The proportion measured is shown at the end of each pathway along with the size of the pathway.
 
-We can also look at our data in relation to qPhos. qPhos is a database holding 554 different experiments across 137 human cell lines. In order to provide context and to understand how well your experimental data mapped in relation to data from qPhos, we mapped all 554 experiments from qPhos to the integrated database and recorded numerous statistics. By running the provided Rscript command( ```Rscript -e "rmarkdown::render('proportionPlots.Rmd')"``` ) in the same directory as the provided 'R' directory you can visualize your experiment in relation to all qPhos experiments along with other general mapping information. 
+We can also look at our data in relation to qPhos. qPhos is a database holding 554 different experiments across 137 human cell lines. In order to provide context and to understand how well your experimental data mapped in relation to data from qPhos, we mapped all 554 experiments from qPhos to the integrated database and recorded numerous statistics. By running the provided Rscript command and providing paths to the provided 'R' directory. This produces a 'Proportion_Plots.pdf' where you can visualize your experiment in relation to all qPhos experiments along with other general mapping information. 
+
+```
+Rscript /path/to/R/proportion_plot_script.R /path/to/R/qPhosAllMappings.tsv R_Mapping_input_Control.tsv 
+```
+![Screen Shot 2022-02-10 at 3 38 49 pm](https://user-images.githubusercontent.com/9949832/153338238-52e6ea7e-589d-4eae-a40d-150fa4f31a8b.png)
 
 ![Screen Shot 2021-06-28 at 11 10 53 pm](https://user-images.githubusercontent.com/9949832/123642097-4329aa80-d866-11eb-87d5-3f18f7a91348.png)
 
