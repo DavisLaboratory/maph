@@ -542,7 +542,7 @@ We can visualize relative statistics in cytoscape:
 
 ### Minimal Connection Network 
 
-With this function you can generate the network of all shortest paths between all nodes (typically referred to as the shortest-paths network). 
+With this function you can generate the network of all shortest paths between all nodes (typically referred to as the shortest-paths network). This can be useful when used on a set of significantly differentially abundant data to find the nodes involved in signalling between these nodes but are not significant themselves.
 
 > "MinimalConnectionNetwork" takes in a **mapped** input database [-idb], an output path [-op], the experiment name of interest [-en], and the weight type to be traversed [-ew] (can be either "Abundance" (a) or "Support" (s)).
 
