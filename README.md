@@ -15,16 +15,16 @@ Proteins in these differing modification states are hereby referred to
 as *proteoforms*. Taking advantage of this structure, maph takes
 an input file of phosphopeptides and maps the phosphorylations onto
 proteins and complexes according to a set of guidelines explained in
-detail in the figure below. It works by assigning a **confidence score**
+detail in the figure below. It works by assigning a **support score**
 and an **abundance score** to each mapped protein and complex.
 
-#### Confidence (Support) Score
+#### Support Score
 
 Phosphoproteomic data is error prone therefore maph computes a
-confidence score to summarise the confidence we have in observing any
+support score to summarise the support we have in observing any
 given proteoform. maph does so by combining evidence from the
-data with that from knowledge bases such as Reactome into a confidence
-score for each proteoform. This confidence score summarises support for
+data with that from knowledge bases such as Reactome into a support
+score for each proteoform. This support score summarises support for
 a given phosphorylation state of a protein (proteoform) over its other
 phosphorylation states based on observations from the data.
 
@@ -48,14 +48,14 @@ p<sup>A</sup>, p<sup>B</sup>, and p<sup>C</sup>) are shown in purple
 while phosphorylations detected in the data (and not in the network) are
 shown in red.
 
-![Support
-Score](https://user-images.githubusercontent.com/9949832/120878866-98292680-c602-11eb-9e33-aaf8e3549ee1.png)
+![supportScore](https://user-images.githubusercontent.com/9949832/159468486-5f02c091-ad51-4a61-936f-e089c36b12ab.png)
 
-The rules in the figure above are used to determine the confidence we
+
+The rules in the figure above are used to determine the support we
 have in the presence of each proteoform given the data we have observed.
-The rules begin by evaluating the confidence each peptide brings towards
-a given proteoform. For instance, when evaluating confidence in
-proteoform 1, we look through peptides 1-6 and score the confidence they
+The rules begin by evaluating the support each peptide brings towards
+a given proteoform. For instance, when evaluating support in
+proteoform 1, we look through peptides 1-6 and score the support they
 bring towards the existence of proteoform 1. Peptide 1 has no
 phosporylation marks at the corresponding point of interest in
 proteoform 1 therefore based on rule 1, it gets a score of 1. Since it
@@ -78,10 +78,10 @@ as such:
     score of 0.675 for this peptide.
 
 The scores contributions from all peptides are then aggregated using the
-mean to produce the final confidence score for each proteoform.
+mean to produce the final support score for each proteoform.
 
 These rules have been logically derived to assist in the identification
-of high-confidence proteoforms. In rule 1 of the peptide score, a match
+of high-support proteoforms. In rule 1 of the peptide score, a match
 means at the amino acid in the proteoform, and the peptide have the same
 status (both phosphorylated or both unphosphorylated). [We give a score
 of 0.5 for a mismatch because that peptide supports the existence of
@@ -93,10 +93,7 @@ multiply the score by 0.9 to reflect that the database takes precedent
 over the data. However, we also reduce the weight of the score to
 reflect the extra unknown phosphorylation. Finally, in Rule 4, because a
 peptide mapping perfectly to a modified proteoform is uncommon and of
-interest we multiply the score by 1.5 to highlight the match. However,
-we do not highlight this if the proteoform is unmodified as perfect
-matches would be unmodified peptides (which mostly occur from unspecific
-binding).
+interest we multiply the score by 1.5 to highlight the match. 
 
 #### Abundance Score
 
@@ -244,12 +241,8 @@ Now we should be ready to map our data! Data can be mapped to pre-built neo4j da
 ```
 unzip databases/mouse.zip
 ```
-This will create a folder called "MOUSE" with a subfolder called "MOUSE_copyFrom". Please create a new Graph folder and copy the database into this new folder. you can do so using:
-```
-mkdir GRAPH
-cp -r MOUSE/MOUSE_copyFrom/ GRAPH/
-```
-You can then use this newly made database for your analysis.
+
+**Note that pre-computed databases need to be re-extracted for new analyses as the mapping step modifies the graph database.**
 
 In order to map your data you will need an input file with the following 4 columns; 
 1. A column where each cell contains a single UniProt ID corresponding to a peptide. *The name of the column cannot contain spaces*. 
@@ -291,27 +284,19 @@ To map the data you can run the following command. Note that this is an intensiv
 java -jar ./path/to/jars/maph.jar -m MapPeptides -idb ./path/to/graph/database/ -op ./path/to/output/ -idf ./path/to/data.txt -as HighestSupport
 ```
                          
-![Filling out parameters](https://user-images.githubusercontent.com/9949832/153336584-51de3134-822c-4927-95bf-d41358d1ddbe.png)
-
+![Filling out parameters](https://user-images.githubusercontent.com/9949832/123599868-6b4ee480-d839-11eb-81f3-73a37ee65293.png)
 
 The tool will automatically detect the different experiments and map them separately. In this case, there are 2 experiments 'Control' and 'Insulin'. After mapping, we can look at the mapping report generated for each experiment in the output directory named 'PhosphoMappingReport_Control' and 'PhosphoMappingReport_Insulin' to understand how well each experiment mapped. Looking at the Control report: 
 
-![Screen Shot 2022-02-10 at 3 03 47 pm](https://user-images.githubusercontent.com/9949832/153336700-cb805580-cc0c-4c9d-9ccb-d61da0a9a32b.png)
-
+![Screen Shot 2021-06-28 at 5 54 39 pm](https://user-images.githubusercontent.com/9949832/123600527-1d86ac00-d83a-11eb-9447-7adbc22e8b08.png)
 
 The first few lines give the statistics from the data such as the number of peptides and proteins that mapped and so on while the network statistics indicate the number of items in the database that were mapped to. Following that, the number of proteins and complexes that have been measured in each cellular location are shown in descending order. 
 
-![Screen Shot 2022-02-10 at 3 23 29 pm](https://user-images.githubusercontent.com/9949832/153336856-663c1039-a575-4c17-b299-aab5f7366f03.png)
-
+![Screen Shot 2021-06-28 at 5 54 56 pm](https://user-images.githubusercontent.com/9949832/123600545-237c8d00-d83a-11eb-8439-8c4cd5b3b8e3.png)
 
 In addition, Reactome pathways with the highest proportion of measured proteins and complexes are listed. The proportion measured is shown at the end of each pathway along with the size of the pathway.
 
-We can also look at our data in relation to qPhos. qPhos is a database holding 554 different experiments across 137 human cell lines. In order to provide context and to understand how well your experimental data mapped in relation to data from qPhos, we mapped all 554 experiments from qPhos to the integrated database and recorded numerous statistics. By running the provided Rscript command and providing paths to the provided 'R' directory. This produces a 'Proportion_Plots.pdf' where you can visualize your experiment in relation to all qPhos experiments along with other general mapping information. 
-
-```
-Rscript /path/to/R/proportion_plot_script.R /path/to/R/qPhosAllMappings.tsv R_Mapping_input_Control.tsv 
-```
-![Screen Shot 2022-02-10 at 3 38 49 pm](https://user-images.githubusercontent.com/9949832/153338238-52e6ea7e-589d-4eae-a40d-150fa4f31a8b.png)
+We can also look at our data in relation to qPhos. qPhos is a database holding 554 different experiments across 137 human cell lines. In order to provide context and to understand how well your experimental data mapped in relation to data from qPhos, we mapped all 554 experiments from qPhos to the integrated database and recorded numerous statistics. By running the provided Rscript command( ```Rscript -e "rmarkdown::render('proportionPlots.Rmd')"``` ) in the same directory as the provided 'R' directory you can visualize your experiment in relation to all qPhos experiments along with other general mapping information. 
 
 ![Screen Shot 2021-06-28 at 11 10 53 pm](https://user-images.githubusercontent.com/9949832/123642097-4329aa80-d866-11eb-87d5-3f18f7a91348.png)
 
@@ -320,8 +305,6 @@ This plot from the R report depicts the distribution of the proportion of peptid
 ![Screen Shot 2021-06-28 at 11 11 16 pm](https://user-images.githubusercontent.com/9949832/123642081-3e64f680-d866-11eb-92c2-41dea0b25884.png)
 
 This plot depicts the distribution of the proportion of phosphorylation nodes in the database that were mapped to from each of the 554 qPhos experiments and where the Control experiment sits (the red line) in comparison. 
-
-In addition to these files, a file is provided listing all of the UniProt ids in your data that did not map to the database. In our exapmle the output file is named "UniProtIDsNotMapped_Control.tsv". 
 
 ### Visualization 
 #### Cytoscape
@@ -346,7 +329,7 @@ Node_ID Database_ID Display_Name Type Database_Link Location Status Kinase Trans
 Where the attributes are associated with the node ids found in the SIF file. The first line contains all of the attributes that are found in that database.
 
 Attribute name | Description
-|:---------------|:-----------|
+---------------|-----------
 Node_ID | The unique node number used to link nodes to attributes in Cytoscape
 Database_ID | The unique node ID given by Reactome 
 Display_Name | The name of the node 
@@ -489,7 +472,7 @@ We can visualize in Cytoscape by loading the file "P15208_to_20006_downstream.ts
 
 The neighbourhood analysis aims to highlight proteins and/or complexes that may not necessarily have been measured in the experiment itself but is surrounded by proteins and complexes that have been measured, making it a node of interest. To accomplish this, first an experiment must be mapped to the network, next a neighbourhood is generated around every protein and complex in the network. The number of direct neighbours to be traversed (and included in the neighbourhood) can be set by the user (henceforth referred to as the neighbourhood size), *Howveer, currently the only neighbourhood size available is 4*. Certain edges are not traversed such as edges leaving small molecules (such as ATP (adenosine triphosphate), which is involved in hundreds of reactions) as well as component edges (which point to all the subcomponents of a complex) to avoid irrelevant reactions being included in the neighbourhood. Once a neighbourhood is generated, four measurements are taken. The first is the number of entities in the neighbourhood that have a received a mapping from the data, second is the number of UniProt ids in the neighbourhood that have received a mapping from the data. Third is the average support score (explained in detail in the manuscript in Chapter 3) per neighbourhood and finally, the fourth measurement is the sum of support scores per neighbourhood.
 
-Pre-calculated distributions have been calculated for each neighbourhood of varying experimental sizes against which you can compare your mapped data. As explained above, qPhos is a database holding 137 different phosphoproteomic experiments across 554 different human experimental conditions, while a database of mouse phosphoproteomics was developed in-house containing 33 experiments accross 680 different mouse experimental conditions. **Currently all provided pre-calulated distributions are to a neighbourhood traversal depth of 4** 
+Pre-calculated distributions have been calculated for each neighbourhood of varying experimental sizes against which you can compare your mapped data. As explained above, qPhos is a database holding 137 different phosphoproteomic experiments across 554 different human experimental conditions, while a database of mouse phosphoproteomics was developed in-house containing 33 experiments accross 680 different mouse experimental conditions. 
 
 Several empirical null distributions were pre-generated in order to calculate statistical significance of each neighbourhood in each of the four categories outined above. These distributions were generated for each species over a range of experiment sizes (1000 unique UniProt ids, 2000 unique UniProt ids, and 6000 unique UniProt ids), allowing the user to pick the distribution closest to their experiment size when performing the neighbourhood analysis. (You can see the number of unique UniProt ids that mapped from your data in the mapping report generated when data is initally mapped to guide you choice in distribution size) 
 
@@ -501,48 +484,17 @@ java -jar jars/maph.jar -m NeighbourhoodAnalysis -idb ./path/to/graph/ -op ./pat
 ```
 >"NeighbourhoodAnalysis" takes in a measured input database [-idb], an output path [-op], the depth of the traversal [-d], the experiment name of interest [-en], and the directory containing the pre-calculated Cumulative Density Function (of the Empirical Null Dirtibutions) per neighbourhood [-cdf]
 
-The cdf directory is provided in this repo, however you will need to unzip each file in the folder you'd like to use and the depth should be set to 4. 
+The cdf directory is provided in this repo, however you will need to unzip the folder you'd like to use
 
 We can look at the printed stats:
 
-![Screen Shot 2022-02-10 at 10 27 09 pm](https://user-images.githubusercontent.com/9949832/153398999-f15010a8-6c5b-42ce-90fa-7fce312a3374.png)
-
-This indicates how many neighbourhoods were significant (P Value <0.05) in each measured category. 
-**With this example, as the number of nodes that mapped was 1,792 the number of significant neighbourhoods is quite high. We reccomend mapping a smaller group such as the proteins shown to be significant in a differential expression analysis to enable more targeted insights. **
-
-We can also look at the report generated by the function: 
-
-![Screen Shot 2022-02-10 at 10 32 42 pm](https://user-images.githubusercontent.com/9949832/153400731-5c52ef0c-d5e6-439b-90f0-d33cf910fd3a.png)
-
-This report holds every protein and complex in the given database and realtive information about each's neighbourhood. 
-
-Attribute name | Description
-|:---------------|:-----------|
-nbhdBaseDBID | The unique node number used to link nodes to attributes in Cytoscape
-nbhdBaseUID | The UniProt id (id's for complexes and protein sets) of the node in the center of the neighbourhood
-DisplayName | The display name for the node in the center of the neighbourhood
-GeneName | Where available, the gene name of the protein in the center of the neighbourhood
-Type | The node type of the node in the center of the neighbourhood
-Location | the cellular location of the node in the center of the neighbourhood
-AbundanceScore | The abundance score mapped in the mapping step for the node in the center of the neighbourhood (can be used to identify if that node was measured in your analysis) 
-NumIntegrated | The number of nodes integrated from PhosphoSitePlus in the neighbourhood 
-nbhdSize | The number of mappable nodes in the neighbourhood 
-entitiesMapped | The number of mappable nodes in the neighbourhood that received a mapping
-entitiesMappedPVal | The P Value of how many entities that recieved mappings in that neighbourhood and if it was higher than expected by random chance
-numUIDs | The number of unique UniProt ids in the neighbourhood 
-numUIDsMapped | The number of UniProt ids that recieved a mapping 
-numUIDsPVal | The P Value of how many UniProt ids recieved a mapping in that neighbourhood and if it was higher than expected by random chance 
-avgSScore | The average support score for that neighbourhood 
-avgSScorePVal | The P Value representing the relative chance the average support score was higher than expected by random chance
-sumSScore | The sum of support scores in that neighbourhood 
-sumSScorePVal | The P Value representing the relative chance that the sum of support scores was higher than expected by random chance 
-DatabaseLink | For convenience, the link to the node in Reactome
+We can also look at the function output: 
 
 We can visualize relative statistics in cytoscape:
 
 ### Minimal Connection Network 
 
-With this function you can generate the network of all shortest paths between all nodes (typically referred to as the shortest-paths network). This can be useful when used on a set of significantly differentially abundant data to find the nodes involved in signalling between these nodes but are not significant themselves.
+With this function you can generate the network of all shortest paths between all nodes (typically referred to as the shortest-paths network). 
 
 > "MinimalConnectionNetwork" takes in a **mapped** input database [-idb], an output path [-op], the experiment name of interest [-en], and the weight type to be traversed [-ew] (can be either "Abundance" (a) or "Support" (s)).
 
@@ -618,10 +570,16 @@ java -jar ./path/to/jars/maph.jar -m pSiteAnnotation -op ./path/to/output/ -idf 
 ```
 
 #### WriteAllUIDs
+This function will write all UniProt ids in a given database into a file called “UniProtIDs.tsv”. 
+
 #### WritePhos
-#### GetSpecies
+This function will write all Phosphorylations in a given database into a file called “Phosphorylations.tsv”. It will print the phosphorylations in the following format with the order UniProt id, modified amino acid, location. For example: Q9WTK7_p_Y166.   
+
 #### ResetScores
+This function will remove all properties associated with a given experiment name. This includes “SUPPORT_SCORE”, “ABUNDANCE_SCORE”, “MAPPED”, “SCORED_BY”, “WEIGHT_SUPPORT” and “WEIGHT_ABUNDANCE”. if that experiment does not exist in the database, all current experiments in the database will be printed. 
+
 #### PrintAllProperties
+This function will print all current node properties in a given database to the console. 
 
 
 
