@@ -15,16 +15,16 @@ Proteins in these differing modification states are hereby referred to
 as *proteoforms*. Taking advantage of this structure, maph takes
 an input file of phosphopeptides and maps the phosphorylations onto
 proteins and complexes according to a set of guidelines explained in
-detail in the figure below. It works by assigning a **confidence score**
+detail in the figure below. It works by assigning a **support score**
 and an **abundance score** to each mapped protein and complex.
 
-#### Confidence Score
+#### Support Score
 
 Phosphoproteomic data is error prone therefore maph computes a
-confidence score to summarise the confidence we have in observing any
+support score to summarise the support we have in observing any
 given proteoform. maph does so by combining evidence from the
-data with that from knowledge bases such as Reactome into a confidence
-score for each proteoform. This confidence score summarises support for
+data with that from knowledge bases such as Reactome into a support
+score for each proteoform. This support score summarises support for
 a given phosphorylation state of a protein (proteoform) over its other
 phosphorylation states based on observations from the data.
 
@@ -48,14 +48,14 @@ p<sup>A</sup>, p<sup>B</sup>, and p<sup>C</sup>) are shown in purple
 while phosphorylations detected in the data (and not in the network) are
 shown in red.
 
-![Support
-Score](https://user-images.githubusercontent.com/9949832/120878866-98292680-c602-11eb-9e33-aaf8e3549ee1.png)
+![supportScore](https://user-images.githubusercontent.com/9949832/159468486-5f02c091-ad51-4a61-936f-e089c36b12ab.png)
 
-The rules in the figure above are used to determine the confidence we
+
+The rules in the figure above are used to determine the support we
 have in the presence of each proteoform given the data we have observed.
-The rules begin by evaluating the confidence each peptide brings towards
-a given proteoform. For instance, when evaluating confidence in
-proteoform 1, we look through peptides 1-6 and score the confidence they
+The rules begin by evaluating the support each peptide brings towards
+a given proteoform. For instance, when evaluating support in
+proteoform 1, we look through peptides 1-6 and score the support they
 bring towards the existence of proteoform 1. Peptide 1 has no
 phosporylation marks at the corresponding point of interest in
 proteoform 1 therefore based on rule 1, it gets a score of 1. Since it
@@ -78,10 +78,10 @@ as such:
     score of 0.675 for this peptide.
 
 The scores contributions from all peptides are then aggregated using the
-mean to produce the final confidence score for each proteoform.
+mean to produce the final support score for each proteoform.
 
 These rules have been logically derived to assist in the identification
-of high-confidence proteoforms. In rule 1 of the peptide score, a match
+of high-support proteoforms. In rule 1 of the peptide score, a match
 means at the amino acid in the proteoform, and the peptide have the same
 status (both phosphorylated or both unphosphorylated). [We give a score
 of 0.5 for a mismatch because that peptide supports the existence of
@@ -93,10 +93,7 @@ multiply the score by 0.9 to reflect that the database takes precedent
 over the data. However, we also reduce the weight of the score to
 reflect the extra unknown phosphorylation. Finally, in Rule 4, because a
 peptide mapping perfectly to a modified proteoform is uncommon and of
-interest we multiply the score by 1.5 to highlight the match. However,
-we do not highlight this if the proteoform is unmodified as perfect
-matches would be unmodified peptides (which mostly occur from unspecific
-binding).
+interest we multiply the score by 1.5 to highlight the match. 
 
 #### Abundance Score
 
@@ -573,10 +570,16 @@ java -jar ./path/to/jars/maph.jar -m pSiteAnnotation -op ./path/to/output/ -idf 
 ```
 
 #### WriteAllUIDs
+This function will write all UniProt ids in a given database into a file called “UniProtIDs.tsv”. 
+
 #### WritePhos
-#### GetSpecies
+This function will write all Phosphorylations in a given database into a file called “Phosphorylations.tsv”. It will print the phosphorylations in the following format with the order UniProt id, modified amino acid, location. For example: Q9WTK7_p_Y166.   
+
 #### ResetScores
+This function will remove all properties associated with a given experiment name. This includes “SUPPORT_SCORE”, “ABUNDANCE_SCORE”, “MAPPED”, “SCORED_BY”, “WEIGHT_SUPPORT” and “WEIGHT_ABUNDANCE”. if that experiment does not exist in the database, all current experiments in the database will be printed. 
+
 #### PrintAllProperties
+This function will print all current node properties in a given database to the console. 
 
 
 
