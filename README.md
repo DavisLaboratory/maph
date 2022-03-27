@@ -582,4 +582,9 @@ This function will remove all properties associated with a given experiment name
 This function will print all current node properties in a given database to the console. 
 
 
+___________________________________________________________________________________________
+Citations 
 
+Joshi-Tope G, Gillespie M, Vastrik I, D’Eustachio P, Schmidt E, de Bono B, et al. Reactome: A knowledgebase of biological pathways. Nucleic Acids Research. 2005;33(DATABASE ISS.). 
+Jassal B, Matthews L, Viteri G, Gong C, Lorente P, Fabregat A, et al. The reactome pathway knowledgebase. Nucleic Acids Research. 2020 Jan 1;48(D1):D498–503. 
+Hornbeck P v., Zhang B, Murray B, Kornhauser JM, Latham V, Skrzypek E. PhosphoSitePlus, 2014: mutations, PTMs and recalibrations. Nucleic Acids Research. 2015 Jan 28;43(D1):D512–20. 
