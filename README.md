@@ -155,7 +155,7 @@ conda create --name maph \
     provided scripts
 
 ```
-git clone https://github.com/HannahHuckstep/maph.git
+git clone https://github.com/DavisLaboratory/maph.git
 ```
 
 2.  [OPTIONAL] download the most current version of Reactome and
